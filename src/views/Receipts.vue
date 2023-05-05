@@ -130,33 +130,32 @@
         class="w-[99%] px-5 h-screen pt-5 -mt-8 bg-white rounded-md shadow-2xl"
         style="height: 90vh"
       >
-        <div
-          @click="openModal"
-          class="bg-blue-700 w-[200px] cursor-pointer rounded-md p-2 text-white text-sm text-center"
-        >
-          + &nbsp;Add new Invice
-        </div>
+    <p class="font-bold text-lg text-blue-700" >All Receipts</p>
 
         <div class="flex p-2 bg-gray-100 cursor-pointer text-sm mt-5">
           <div class="w-1/4">No</div>
           <div class="w-1/4">Date</div>
+          <div class="w-1/4">Items</div>
           <div class="w-1/4">Product</div>
           <div class="w-1/4">Company Name</div>
           <div class="w-1/4">Contacts</div>
           <div class="w-1/4">Address</div>
+ 
           <div class="w-1/4">Action</div>
         </div>
         <div
-          v-for="invoice in ivoicesData"
-          :key="invoice.id" @click="viewInvoice(invoice.id)"
+          v-for="invoice in receiptsData"
+          :key="invoice.id"  @click="viewReceipt(invoice.id)"
           class="flex p-2 border-gray-200 border-b hover:border-b-2 cursor-pointer text-gray-500 text-xs"
         >
           <div class="w-1/4">00{{ invoice.id }}</div>
           <div class="w-1/4">{{ invoice.dateTbl }}</div>
+          <div class="w-1/4">{{ JSON.parse(invoice.itemsTbl).length }}</div>
           <div class="w-1/4 truncate">{{ invoice.productTbl }}</div>
           <div class="w-1/4 truncate">{{ invoice.companyTbl }}</div>
           <div class="w-1/4 truncate">{{ invoice.contactsTbl }}</div>
           <div class="w-1/4">{{ invoice.addressTbl }}</div>
+        
 
           <div class="w-1/4 flex justify-between">
             <p class="bg-yellow-100 text-yellow-700 px-2 rounded border">
@@ -189,7 +188,7 @@ import { Switch, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
 let db = new Localbase("db");
 export default {
-  name: "homeView",
+  name: "Receipts",
   components: {
     sidebar,
     navbar,
@@ -208,7 +207,7 @@ export default {
   },
   data() {
     return {
-      ivoicesData: [],
+      receiptsData: [],
       enabled: true,
       isOpen: false,
       product: "",
@@ -243,40 +242,7 @@ export default {
       this.priority = task.priority;
       this.member = task.member;
     },
-    deleteTask(task) {
-      let taskId = this.tasks.find((task1) => task1.id === task.id).id;
-      db.collection("tasks").doc({ id: taskId }).delete();
-      // this.tasks.splice(index, 1)
-      window.location.reload();
-    },
-    postInvoice() {
-      let formdata = {
-        id: this.ivoicesData?.length + 1,
-        productTbl: this.product,
-        companyTbl: this.company,
-        addressTbl: this.address,
-        contactsTbl: this.contacts,
-        paidTbl: 0,
-        balanceTbl: 0,
-        itemsTbl: JSON.stringify(this.invoiceItems),
-        dateTbl: new Date().toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }),
-      };
-      console.log("form data", formdata);
-      db.collection("invoicesTable").add(formdata);
-      this.getTasks();
-      this.product = "";
-      this.company = "";
-      this.address = "";
-      this.contacts = "";
-      this.amount = "";
-      this.amount = "";
-      this.closeIsOpen();
-      // window.location.reload();
-    },
+
     updateTask() {
       let taskId = this.tasks.find((task1) => task1.id === this.id).id;
       console.log(taskId);
@@ -304,13 +270,13 @@ export default {
       this.priority = "";
       this.member = "";
       this.start_date = "";
-      this.getTasks();
+      this.getReceipts();
     },
-    getTasks() {
-      db.collection("invoicesTable")
+    getReceipts() {
+      db.collection("receiptsTable")
         .get()
-        .then((invoicesTable) => {
-          this.ivoicesData = invoicesTable;
+        .then((receiptsTable) => {
+          this.receiptsData = receiptsTable;
         });
     },
     addItem() {
@@ -323,12 +289,12 @@ export default {
     removeItem(index) {
       this.invoiceItems.splice(index, 1);
     },
-    viewInvoice(id) {
-			this.$router.push(`/printInvoice/${id}`);
+    viewReceipt(id) {
+			this.$router.push(`/printreceipt/${id}`);
 		},
   },
   created() {
-    this.getTasks();
+    this.getReceipts();
   },
 };
 </script>
