@@ -231,6 +231,7 @@ export default {
     openModal() {
       this.isOpen = true;
     },
+
     EditTask(task) {
       this.isOpen = true;
       this.isEdit = true;
@@ -272,6 +273,7 @@ export default {
       this.start_date = "";
       this.getReceipts();
     },
+
     getReceipts() {
       db.collection("receiptsTable")
         .get()
@@ -279,6 +281,7 @@ export default {
           this.receiptsData = receiptsTable;
         });
     },
+
     addItem() {
       this.invoiceItems.push({
         item: "",
@@ -286,9 +289,11 @@ export default {
         unitCost: "",
       });
     },
+
     removeItem(index) {
       this.invoiceItems.splice(index, 1);
     },
+    
     viewReceipt(id) {
 			this.$router.push(`/printreceipt/${id}`);
 		},
