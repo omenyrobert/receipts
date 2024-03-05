@@ -3,7 +3,7 @@
     <div  v-for="printt in printData" :key="printt.id">
       <div class="flex justify-between">
       <div>
-        <img src="../views/logo.png" class="w-3/4" />
+        <img src="../views/logo.png" class="w-32" />
       </div>
       <div class="flex">
         <p class="text-blue-700 font-medium text-xl">Invoice</p>

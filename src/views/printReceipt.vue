@@ -3,7 +3,7 @@
     <div  v-for="printt in printData" :key="printt.id">
       <div class="flex justify-between">
       <div>
-        <img src="../views/logo.png" class="w-3/4" />
+        <img src="../views/logo.png" class="w-64" />
       </div>
       <div class="flex">
         <p class="text-blue-700 font-medium text-xl">Receipt</p>
@@ -12,9 +12,9 @@
     </div>
    
     <div>
-      <p>Kampala Road, Kampala Plaza 3rd Floor</p>
+      <p>Ntinda Stage TechBuzz Hub Building</p>
       <p>
-        +256 757227257, +256 771038366 whatsapp +256 757227257,
+        +256 757227257, +256 771038366 whatsapp +256 757227257, jirehdevsoftware.com
       </p>
      
     </div>
@@ -40,22 +40,29 @@
 
 
 
-    <div  class="mt-5 p-2 flex text-white bg-blue-700">
+    <div  class="mt-5 p-2 flex bg-blue-100 text-blue-700">
       <div class="w-1/4">Item</div>
       <div class="w-1/4">Qty</div>
       <div class="w-1/4">Unit Cost</div>
       <div class="w-1/4">Total</div>
     </div>
 
-    <div class="mt-5 border-blue-100 border-b-2 p-2 flex text-gray-600 text-sm" v-for="(receiptItem, index) in  receiptItems" :key="index" >
+    <div class="mt-5 border-b border-gray-200 p-2 flex text-black text-sm" v-for="(receiptItem, index) in  receiptItems" :key="index" >
       <div class="w-1/4">{{ receiptItem.item }}</div>
       <!-- Number(item.unitSell).toLocaleString() -->
       <div class="w-1/4">{{ Number(receiptItem.qty).toLocaleString() }}</div>
       <div class="w-1/4">{{ Number(receiptItem.unitCost).toLocaleString() }}</div>
       <div class="w-1/4">{{ Number(receiptItem.qty * receiptItem.unitCost).toLocaleString() }}</div>
     </div>
-    <div  class="p-2 flex text-blue-700 bg-blue-100">
-      <div class="w-1/4">Item</div>
+    <div class="mt-5 border-b border-gray-200 p-2 flex text-black text-sm">
+      <div class="w-1/4"></div>
+      <!-- Number(item.unitSell).toLocaleString() -->
+      <div class="w-1/4"></div>
+      <div class="w-1/4"></div>
+      <div class="w-1/4"></div>
+    </div>
+    <div   class="p-2 flex bg-blue-700 text-white text-xl font-bold">
+      <div class="w-1/4">Total</div>
       <div class="w-1/4"></div>
       <div class="w-1/4"></div>
       <div class="w-1/4">{{ Number(total).toLocaleString() }}</div>

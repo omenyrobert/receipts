@@ -12,9 +12,9 @@
         v-if="isOpen"
         class="border border-gray-200 rounded-md absolute w-1/2 shadow-2xl bg-white"
       >
-        <form @submit.prevent="postInvoice">
+        <form @submit.prevent="postreceipt">
           <div class="flex justify-between bg-gray-100 p-3">
-            <div class="text-blue-700 font-bold">Add Invoice</div>
+            <div class="text-blue-700 font-bold">Add receipt</div>
             <div>
               <p @click="closeIsOpen" class="cursor-pointer">X</p>
             </div>
@@ -62,7 +62,7 @@
                 type="submit"
                 class="text-white p-2 bg-blue-700 rounded-md w-3/4"
               >
-                Add Invoice
+                Add receipt
               </button>
             </div>
           </div>
@@ -73,7 +73,7 @@
           >
             + Add NOK
           </button>
-          <div v-for="(item, index) in invoiceItems" :key="index">
+          <div v-for="(item, index) in receiptItems" :key="index">
             <div class="flex">
               <div class="p-1">
                 <input
@@ -130,32 +130,40 @@
         class="w-[99%] px-5 h-screen pt-5 -mt-8 bg-white rounded-md shadow-2xl"
         style="height: 90vh"
       >
-    <p class="font-bold text-lg text-blue-700" >All Receipts</p>
+      <div class="flex justify-between">
+        <div>
+      <p class="text-xl text-blue-500 font-bold">Receipts</p>
+    
+    </div>
+    <div
+          @click="openModal"
+          class="bg-blue-700 w-[200px] cursor-pointer rounded-md p-2 text-white text-sm text-center"
+        >
+          + &nbsp;Add new Receipt
+        </div>
+      </div>
+     
 
         <div class="flex p-2 bg-gray-100 cursor-pointer text-sm mt-5">
           <div class="w-1/4">No</div>
           <div class="w-1/4">Date</div>
-          <div class="w-1/4">Items</div>
           <div class="w-1/4">Product</div>
           <div class="w-1/4">Company Name</div>
           <div class="w-1/4">Contacts</div>
           <div class="w-1/4">Address</div>
- 
           <div class="w-1/4">Action</div>
         </div>
         <div
-          v-for="invoice in receiptsData"
-          :key="invoice.id"  @click="viewReceipt(invoice.id)"
+          v-for="receipt in ivoicesData"
+          :key="receipt.id" @click="viewreceipt(receipt.id)"
           class="flex p-2 border-gray-200 border-b hover:border-b-2 cursor-pointer text-gray-500 text-xs"
         >
-          <div class="w-1/4">00{{ invoice.id }}</div>
-          <div class="w-1/4">{{ invoice.dateTbl }}</div>
-          <div class="w-1/4">{{ JSON.parse(invoice.itemsTbl).length }}</div>
-          <div class="w-1/4 truncate">{{ invoice.productTbl }}</div>
-          <div class="w-1/4 truncate">{{ invoice.companyTbl }}</div>
-          <div class="w-1/4 truncate">{{ invoice.contactsTbl }}</div>
-          <div class="w-1/4">{{ invoice.addressTbl }}</div>
-        
+          <div class="w-1/4">00{{ receipt.id }}</div>
+          <div class="w-1/4">{{ receipt.dateTbl }}</div>
+          <div class="w-1/4 truncate">{{ receipt.productTbl }}</div>
+          <div class="w-1/4 truncate">{{ receipt.companyTbl }}</div>
+          <div class="w-1/4 truncate">{{ receipt.contactsTbl }}</div>
+          <div class="w-1/4">{{ receipt.addressTbl }}</div>
 
           <div class="w-1/4 flex justify-between">
             <p class="bg-yellow-100 text-yellow-700 px-2 rounded border">
@@ -188,7 +196,7 @@ import { Switch, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
 let db = new Localbase("db");
 export default {
-  name: "Receipts",
+  name: "homeView",
   components: {
     sidebar,
     navbar,
@@ -207,7 +215,7 @@ export default {
   },
   data() {
     return {
-      receiptsData: [],
+      ivoicesData: [],
       enabled: true,
       isOpen: false,
       product: "",
@@ -215,7 +223,7 @@ export default {
       address: null,
       contacts: null,
       amount: null,
-      invoiceItems: [
+      receiptItems: [
         {
           item: "",
           qty: "",
@@ -231,7 +239,6 @@ export default {
     openModal() {
       this.isOpen = true;
     },
-
     EditTask(task) {
       this.isOpen = true;
       this.isEdit = true;
@@ -243,7 +250,40 @@ export default {
       this.priority = task.priority;
       this.member = task.member;
     },
-
+    deleteTask(task) {
+      let taskId = this.tasks.find((task1) => task1.id === task.id).id;
+      db.collection("tasks").doc({ id: taskId }).delete();
+      // this.tasks.splice(index, 1)
+      window.location.reload();
+    },
+    postreceipt() {
+      let formdata = {
+        id: this.ivoicesData?.length + 1,
+        productTbl: this.product,
+        companyTbl: this.company,
+        addressTbl: this.address,
+        contactsTbl: this.contacts,
+        paidTbl: 0,
+        balanceTbl: 0,
+        itemsTbl: JSON.stringify(this.receiptItems),
+        dateTbl: new Date().toLocaleDateString("en-us", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
+      };
+      console.log("form data", formdata);
+      db.collection("receiptsTable").add(formdata);
+      this.getTasks();
+      this.product = "";
+      this.company = "";
+      this.address = "";
+      this.contacts = "";
+      this.amount = "";
+      this.amount = "";
+      this.closeIsOpen();
+      // window.location.reload();
+    },
     updateTask() {
       let taskId = this.tasks.find((task1) => task1.id === this.id).id;
       console.log(taskId);
@@ -271,35 +311,31 @@ export default {
       this.priority = "";
       this.member = "";
       this.start_date = "";
-      this.getReceipts();
+      this.getTasks();
     },
-
-    getReceipts() {
+    getTasks() {
       db.collection("receiptsTable")
         .get()
         .then((receiptsTable) => {
-          this.receiptsData = receiptsTable;
+          this.ivoicesData = receiptsTable;
         });
     },
-
     addItem() {
-      this.invoiceItems.push({
+      this.receiptItems.push({
         item: "",
         qty: "",
         unitCost: "",
       });
     },
-
     removeItem(index) {
-      this.invoiceItems.splice(index, 1);
+      this.receiptItems.splice(index, 1);
     },
-    
-    viewReceipt(id) {
+    viewreceipt(id) {
 			this.$router.push(`/printreceipt/${id}`);
 		},
   },
   created() {
-    this.getReceipts();
+    this.getTasks();
   },
 };
 </script>
