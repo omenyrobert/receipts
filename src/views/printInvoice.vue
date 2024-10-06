@@ -12,9 +12,9 @@
     </div>
    
     <div>
-      <p>Kampala Road, Kampala Plaza 3rd Floor</p>
+      <p>Ntinda Stage TechBuzz Hub Buildinhg</p>
       <p>
-        +256 757227257, +256 771038366 whatsapp +256 757227257,
+        +256 757227257, whatsapp +256 757227257,
       </p>
      
     </div>
