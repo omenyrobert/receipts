@@ -12,7 +12,7 @@
     </div>
    
     <div>
-      <p>Ntinda Stage TechBuzz Hub Buildinhg</p>
+      <p>Ntinda Stage TechBuzz Hub Building</p>
       <p>
         +256 757227257, whatsapp +256 757227257,
       </p>
