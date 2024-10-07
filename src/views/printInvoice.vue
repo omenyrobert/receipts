@@ -60,6 +60,22 @@
       <div class="w-1/4"></div>
       <div class="w-1/4">{{ Number(total).toLocaleString() }}</div>
     </div>
+
+    <div class="flex gap-2">
+      <div class="p-2 m-2 border border-gray-300">
+        <p>Bank Name</p>
+        <p class="text-xl">Equity Bank</p>
+      </div>
+      <div class="p-2 m-2 border border-gray-300">
+        <p>Account Name</p>
+        <p class="text-xl">Robert Omeny</p>
+      </div>
+      <div class="p-2 m-2 border border-gray-300">
+        <p>Account Number</p>
+        <p class="text-xl">1037101292691</p>
+      </div>
+
+    </div>
   </div>
 </template>
 
