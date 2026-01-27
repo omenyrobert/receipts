@@ -3,339 +3,252 @@
     <div class="w-[300px]">
       <sidebar />
     </div>
+
     <div class="w-full">
       <navbar />
 
-      <!-- add model -->
-
+      <!-- ADD RECEIPT MODAL -->
       <div
         v-if="isOpen"
-        class="border border-gray-200 rounded-md absolute w-1/2 shadow-2xl bg-white"
+        class="border border-gray-200 rounded-md absolute w-9/12 -ml-32 shadow-2xl bg-white z-50 top-20"
       >
-        <form @submit.prevent="postreceipt">
+        <form @submit.prevent="postReceipt">
           <div class="flex justify-between bg-gray-100 p-3">
-            <div class="text-blue-700 font-bold">Add receipt</div>
-            <div>
-              <p @click="closeIsOpen" class="cursor-pointer">X</p>
-            </div>
+            <div class="text-blue-700 font-bold">Add Receipt</div>
+            <p @click="closeIsOpen" class="cursor-pointer">X</p>
           </div>
+
           <div class="flex p-3">
             <div class="w-1/2">
-              <label>Product</label><br />
-              <input
-                type="text"
-                v-model="product"
-                placeholder="Enter Product"
-                class="border border-gray-300 w-3/4 rounded-md p-2 mt-2"
-                required
-              />
-              <br /><br />
-              <label>Contacts</label><br />
-              <input
-                type="text"
-                v-model="contacts"
-                placeholder="Enter contacts"
-                class="border border-gray-300 w-3/4 rounded-md p-2 mt-2"
-                required
-              />
+              <label>Received From</label>
+              <input v-model="received_from" placeholder="Received From" class="input" required />
+
+              <label class="mt-4 block">Contacts</label>
+              <input v-model="contacts" placeholder="Enter Contacts" class="input" required />
+
+              <label>Address</label>
+              <input v-model="address" placeholder="Address" class="input" />
+
+              <label class="mt-4 block">Payment Method</label>
+              <input v-model="payment_method" placeholder="Enter Method" class="input" />
             </div>
+
             <div class="w-1/2">
-              <label>Company Name</label><br />
-              <input
-                type="text"
-                v-model="company"
-                placeholder="Enter Name"
-                class="border border-gray-300 w-3/4 rounded-md p-2 mt-2"
-                required
-              />
-              <br /><br />
-              <label>Address</label><br />
-              <input
-                type="text"
-                v-model="address"
-                placeholder="Enter Address"
-                class="border border-gray-300 w-3/4 rounded-md p-2 mt-2"
-                required
-              />
-              <br /><br /><br />
+              <!-- ITEMS -->
               <button
-                type="submit"
-                class="text-white p-2 bg-blue-700 rounded-md w-3/4"
+                type="button"
+                class="text-xs ml-5 text-blue-700"
+                @click="addItem"
               >
-                Add receipt
+                + Add Item
               </button>
-            </div>
-          </div>
-          <button
-            type="button"
-            class="text-danger text-xs ml-5"
-            @click="addItem"
-          >
-            + Add NOK
-          </button>
-          <div v-for="(item, index) in receiptItems" :key="index">
-            <div class="flex">
-              <div class="p-1">
+
+              <div
+                v-for="(item, index) in receiptItems"
+                :key="index"
+                class="flex px-5"
+              >
                 <input
                   v-model="item.item"
-                  placeholder="Enter Item"
-                  class="border border-gray-300 w-full rounded-md p-2 mt-2"
-                  required
+                  class="input w-1/3"
+                  placeholder="Item"
                 />
-              </div>
-              <div class="p-1">
                 <input
-                  v-model="item.qty"
-                  placeholder="qty"
+                  v-model.number="item.qty"
                   type="number"
-                  class="border border-gray-300 w-full rounded-md p-2 mt-2"
-                  required
+                  class="input w-1/6 mx-1"
+                  placeholder="Qty"
                 />
-              </div>
-              <div class="p-1">
                 <input
-                  v-model="item.unitCost"
+                  v-model.number="item.unit_cost"
                   type="number"
+                  class="input w-1/4"
                   placeholder="Unit cost"
-                  class="border border-gray-300 w-full rounded-md p-2 mt-2"
-                  required
                 />
-              </div>
-              <div class="text-sm p-2 rounded-md bg-gray-100 m-2">
-                {{ item.qty * item.unitCost }}
-              </div>
-              <br />
-              <div>
+
+                <div class="p-2 bg-gray-100 m-2 rounded">
+                  {{ item.qty * item.unit_cost || 0 }}
+                </div>
+
                 <button
+                  v-if="index !== 0"
                   type="button"
-                  class="text-red-700 text-xs mt-5"
+                  class="text-red-600 text-xs mt-4"
                   @click="removeItem(index)"
-                  v-show="index != 0"
                 >
                   Remove
                 </button>
               </div>
+
+              <p class="ml-5 mt-3">Comment</p>
+              <textarea
+                v-model="comment"
+                class="border w-10/12 ml-5 rounded-md p-2"
+              ></textarea>
+
+              <button
+                type="submit"
+                class="mt-6 text-white p-2 bg-blue-700 rounded-md w-3/4"
+              >
+                Add Receipt
+              </button>
             </div>
           </div>
-          <br />
-          <br />
+
+          <br /><br />
         </form>
       </div>
 
-      <!-- end model -->
-
-
-
+      <!-- RECEIPTS TABLE -->
       <div
-        class="w-[99%] px-5 h-screen pt-5 -mt-8 bg-white rounded-md shadow-2xl"
+        class="w-[99%] px-5 pt-5 bg-white rounded-md shadow-2xl"
         style="height: 90vh"
       >
-      <div class="flex justify-between">
-        <div>
-      <p class="text-xl text-blue-500 font-bold">Receipts</p>
-    
-    </div>
-    <div
-          @click="openModal"
-          class="bg-blue-700 w-[200px] cursor-pointer rounded-md p-2 text-white text-sm text-center"
-        >
-          + &nbsp;Add new Receipt
-        </div>
-      </div>
-     
+        <div class="flex justify-between">
+          <p class="text-xl text-blue-500 font-bold">Receipts</p>
 
-        <div class="flex p-2 bg-gray-100 cursor-pointer text-sm mt-5">
-          <div class="w-1/4">No</div>
-          <div class="w-1/4">Date</div>
-          <div class="w-1/4">Product</div>
-          <div class="w-1/4">Company Name</div>
-          <div class="w-1/4">Contacts</div>
-          <div class="w-1/4">Address</div>
-          <div class="w-1/4">Action</div>
+          <div
+            @click="openModal"
+            class="bg-blue-700 w-[200px] cursor-pointer rounded-md p-2 text-white text-sm text-center"
+          >
+            + Add new Receipt
+          </div>
         </div>
+
+        <div class="flex p-2 bg-gray-100 text-sm mt-5">
+          <div class="w-1/6">No</div>
+          <div class="w-1/6">Date</div>
+          <div class="w-1/6">Received From</div>
+          <div class="w-1/6">Contacts</div>
+          <div class="w-1/6">Amount</div>
+          <div class="w-1/6">Action</div>
+        </div>
+
         <div
-          v-for="receipt in ivoicesData"
-          :key="receipt.id" @click="viewreceipt(receipt.id)"
-          class="flex p-2 border-gray-200 border-b hover:border-b-2 cursor-pointer text-gray-500 text-xs"
+          v-for="receipt in receipts"
+          :key="receipt.id"
+          class="flex p-2 border-b text-xs text-gray-600 hover:bg-gray-50 cursor-pointer"
         >
-          <div class="w-1/4">00{{ receipt.id }}</div>
-          <div class="w-1/4">{{ receipt.dateTbl }}</div>
-          <div class="w-1/4 truncate">{{ receipt.productTbl }}</div>
-          <div class="w-1/4 truncate">{{ receipt.companyTbl }}</div>
-          <div class="w-1/4 truncate">{{ receipt.contactsTbl }}</div>
-          <div class="w-1/4">{{ receipt.addressTbl }}</div>
+          <div class="w-1/6">REC-{{ receipt.id }}</div>
+          <div class="w-1/6">{{ formatDate(receipt.created_at) }}</div>
+          <div class="w-1/6 truncate">{{ receipt.received_from }}</div>
+          <div class="w-1/6">{{ receipt.contacts }}</div>
+          <div class="w-1/6">{{ formatMoney(receipt.amount) }}</div>
 
-          <div class="w-1/4 flex justify-between">
-            <p class="bg-yellow-100 text-yellow-700 px-2 rounded border">
-              Edit
-            </p>
+          <div class="w-1/6">
+            <span
+              class="text-blue-600 cursor-pointer hover:underline"
+              @click="viewReceipt(receipt.id)"
+            >
+              View
+            </span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import sidebar from "../components/sidebar.vue";
 import navbar from "../components/navbar.vue";
+import AxiosInstance from "../../AxiosInstance";
 
-import {
-  MagnifyingGlassIcon,
-  ChevronUpIcon,
-  ArrowUpOnSquareIcon,
-  Squares2X2Icon,
-  ChevronDownIcon,
-  StarIcon,
-  ChartBarIcon,
-  InboxIcon,
-  ViewfinderCircleIcon,
-  TrashIcon,
-  PencilIcon,
-} from "@heroicons/vue/24/solid";
-import { Switch, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
-
-let db = new Localbase("db");
 export default {
-  name: "homeView",
-  components: {
-    sidebar,
-    navbar,
-    PencilIcon,
-    MagnifyingGlassIcon,
-    ChevronUpIcon,
-    Switch,
-    TrashIcon,
-    ArrowUpOnSquareIcon,
-    Squares2X2Icon,
-    ChevronDownIcon,
-    StarIcon,
-    ChartBarIcon,
-    InboxIcon,
-    ViewfinderCircleIcon,
-  },
+  components: { sidebar, navbar },
+
   data() {
     return {
-      ivoicesData: [],
-      enabled: true,
       isOpen: false,
-      product: "",
-      company: null,
-      address: null,
-      contacts: null,
-      amount: null,
-      receiptItems: [
-        {
-          item: "",
-          qty: "",
-          unitCost: "",
-        },
-      ],
+      receipts: [],
+      received_from: "",
+      contacts: "",
+      address: "",
+      payment_method: "",
+      comment: "",
+      receiptItems: [{ item: "", qty: 1, unit_cost: 0 }],
     };
   },
+
   methods: {
-    closeIsOpen() {
-      this.isOpen = false;
-    },
     openModal() {
       this.isOpen = true;
     },
-    EditTask(task) {
-      this.isOpen = true;
-      this.isEdit = true;
-      this.title = task.title;
-      this.id = task.id;
-      this.project1 = task.project1;
-      this.project2 = task.project2;
-      this.deadLine = task.deadLine;
-      this.priority = task.priority;
-      this.member = task.member;
+
+    closeIsOpen() {
+      this.isOpen = false;
     },
-    deleteTask(task) {
-      let taskId = this.tasks.find((task1) => task1.id === task.id).id;
-      db.collection("tasks").doc({ id: taskId }).delete();
-      // this.tasks.splice(index, 1)
-      window.location.reload();
-    },
-    postreceipt() {
-      let formdata = {
-        id: this.ivoicesData?.length + 1,
-        productTbl: this.product,
-        companyTbl: this.company,
-        addressTbl: this.address,
-        contactsTbl: this.contacts,
-        paidTbl: 0,
-        balanceTbl: 0,
-        itemsTbl: JSON.stringify(this.receiptItems),
-        dateTbl: new Date().toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }),
-      };
-      console.log("form data", formdata);
-      db.collection("receiptsTable").add(formdata);
-      this.getTasks();
-      this.product = "";
-      this.company = "";
-      this.address = "";
-      this.contacts = "";
-      this.amount = "";
-      this.amount = "";
-      this.closeIsOpen();
-      // window.location.reload();
-    },
-    updateTask() {
-      let taskId = this.tasks.find((task1) => task1.id === this.id).id;
-      console.log(taskId);
-      db.collection("tasks")
-        .doc({ id: taskId })
-        .update({
-          stage: 1,
-          title: this.title,
-          project1: this.project1,
-          project2: this.project2,
-          deadLine: this.deadLine,
-          priority: this.priority,
-          member: this.member,
-          start_date: new Date().toLocaleDateString("en-us", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          }),
-        });
-      this.stage = "";
-      this.title = "";
-      this.project1 = "";
-      this.project2 = "";
-      this.deadLine = "";
-      this.priority = "";
-      this.member = "";
-      this.start_date = "";
-      this.getTasks();
-    },
-    getTasks() {
-      db.collection("receiptsTable")
-        .get()
-        .then((receiptsTable) => {
-          this.ivoicesData = receiptsTable;
-        });
-    },
+
     addItem() {
-      this.receiptItems.push({
-        item: "",
-        qty: "",
-        unitCost: "",
-      });
+      this.receiptItems.push({ item: "", qty: 1, unit_cost: 0 });
     },
+
     removeItem(index) {
       this.receiptItems.splice(index, 1);
     },
-    viewreceipt(id) {
-			this.$router.push(`/printreceipt/${id}`);
-		},
+
+    async postReceipt() {
+      const amount = this.receiptItems.reduce(
+        (sum, i) => sum + i.qty * i.unit_cost,
+        0
+      );
+
+      const payload = {
+        received_from: this.received_from,
+        contacts: this.contacts,
+        address: this.address,
+        payment_method: this.payment_method,
+        comment: this.comment,
+        amount,
+        items: this.receiptItems,
+      };
+
+      await AxiosInstance.post("/receipts", payload);
+
+      this.fetchReceipts();
+      this.resetForm();
+      this.closeIsOpen();
+    },
+
+    async fetchReceipts() {
+      const res = await AxiosInstance.get("/receipts");
+      this.receipts = res.data;
+    },
+
+    resetForm() {
+      this.received_from = "";
+      this.contacts = "";
+      this.address = "";
+      this.payment_method = "";
+      this.comment = "";
+      this.receiptItems = [{ item: "", qty: 1, unit_cost: 0 }];
+    },
+
+    viewReceipt(id) {
+      this.$router.push(`/printreceipt/${id}`);
+    },
+
+    formatMoney(value) {
+      return Number(value).toLocaleString();
+    },
+
+    formatDate(date) {
+      return new Date(date).toLocaleDateString();
+    },
   },
-  created() {
-    this.getTasks();
+
+  mounted() {
+    this.fetchReceipts();
   },
 };
 </script>
+
+<style scoped>
+.input {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  width: 95%;
+  margin-top: 0.5rem;
+}
+</style>

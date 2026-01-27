@@ -1,115 +1,127 @@
 <template>
-  <div class="w-full bg-white p-10 h-full" >
-    <div  v-for="printt in printData" :key="printt.id">
-      <div class="flex justify-between">
-      <div>
-        <img src="../views/logo.png" class="w-32" />
-      </div>
+  <div class="w-full bg-white p-10 h-full" v-if="invoice">
+    <!-- HEADER -->
+    <div class="flex justify-between">
+      <img src="../views/logo.png" class="w-32" />
+
       <div class="flex">
         <p class="text-blue-700 font-medium text-xl">Invoice</p>
-        <p class="ml-5 mt-1">00{{ printt.id }}</p>
+        <p class="ml-5 mt-1">INV-{{ invoice.id }}</p>
       </div>
     </div>
-   
-    <div>
+
+    <div class="mt-2">
       <p>Ntinda Stage TechBuzz Hub Building</p>
-      <p>
-        +256 757227257, whatsapp +256 757227257,
-      </p>
-     
+      <p>+256 757227257, WhatsApp +256 757227257</p>
     </div>
-    <hr class="bg-blue-400 h-1 w-full my-2" />
+
+    <hr class="bg-blue-400 h-1 w-full my-3" />
+
+    <!-- BILLING -->
     <div class="flex justify-between mt-5">
       <div>
         <p class="text-blue-700 font-medium text-2xl">Billed To</p>
-        <p class="text-gray-700"> {{ printt.companyTbl }}</p>
-        <p class="text-gray-700">{{ printt.addressTbl }}</p>
-        <p class="text-gray-700">{{ printt.contactsTbl }}</p>
+        <p class="text-gray-700">{{ invoice.company_name }}</p>
+        <p class="text-gray-700">{{ invoice.address }}</p>
+        <p class="text-gray-700">{{ invoice.contacts }}</p>
       </div>
+
       <div>
         <p class="text-blue-700 font-medium text-2xl">Product</p>
-        <p class="text-xl text-gray-700"> {{ printt.productTbl }}</p>
-    
+        <p class="text-xl text-gray-700">{{ invoice.product }}</p>
       </div>
+
       <div class="flex">
         <p class="text-blue-700 font-medium text-xl">Invoice Date</p>
-        <p class="ml-5 mt-1">{{ printt.dateTbl }}</p>
+        <p class="ml-5 mt-1">{{ formatDate(invoice.created_at) }}</p>
       </div>
     </div>
-    </div>
 
-
-
-    <div  class="mt-5 p-2 flex text-white bg-blue-700">
+    <!-- TABLE HEADER -->
+    <div class="mt-8 p-2 flex text-white bg-blue-700">
       <div class="w-1/4">Item</div>
       <div class="w-1/4">Qty</div>
       <div class="w-1/4">Unit Cost</div>
       <div class="w-1/4">Total</div>
     </div>
 
-    <div class="mt-5 border-blue-100 border-b-2 p-2 flex text-gray-600 text-sm" v-for="(receiptItem, index) in  receiptItems" :key="index" >
-      <div class="w-1/4">{{ receiptItem.item }}</div>
-      <!-- Number(item.unitSell).toLocaleString() -->
-      <div class="w-1/4">{{ Number(receiptItem.qty).toLocaleString() }}</div>
-      <div class="w-1/4">{{ Number(receiptItem.unitCost).toLocaleString() }}</div>
-      <div class="w-1/4">{{ Number(receiptItem.qty * receiptItem.unitCost).toLocaleString() }}</div>
-    </div>
-    <div  class="p-2 flex text-blue-700 bg-blue-100">
-      <div class="w-1/4">Item</div>
-      <div class="w-1/4"></div>
-      <div class="w-1/4"></div>
-      <div class="w-1/4">{{ Number(total).toLocaleString() }}</div>
+    <!-- ITEMS -->
+    <div
+      v-for="(item, index) in invoice.items"
+      :key="index"
+      class="p-2 flex border-b text-gray-600 text-sm"
+    >
+      <div class="w-1/4">{{ item.item }}</div>
+      <div class="w-1/4">{{ item.qty }}</div>
+      <div class="w-1/4">{{ formatMoney(item.unit_cost) }}</div>
+      <div class="w-1/4">{{ formatMoney(item.total) }}</div>
     </div>
 
-    <div class="flex gap-2">
-      <div class="p-2 m-2 border border-gray-300">
+    <!-- TOTAL -->
+    <div class="p-2 flex text-blue-700 bg-blue-100 font-bold">
+      <div class="w-3/4 text-right">TOTAL</div>
+      <div class="w-1/4">{{ formatMoney(grandTotal) }}</div>
+    </div>
+
+    <p class="font-bold text-lg p-2 bg-gray-100 m-2">{{invoice.comment}}</p>
+    <!-- BANK DETAILS -->
+    <div class="flex gap-2 mt-6">
+      <div class="p-3 border border-gray-300">
         <p>Bank Name</p>
         <p class="text-xl">Equity Bank</p>
       </div>
-      <div class="p-2 m-2 border border-gray-300">
+      <div class="p-3 border border-gray-300">
         <p>Account Name</p>
         <p class="text-xl">Robert Omeny</p>
       </div>
-      <div class="p-2 m-2 border border-gray-300">
+      <div class="p-3 border border-gray-300">
         <p>Account Number</p>
         <p class="text-xl">1037101292691</p>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
+import AxiosInstance from "../../AxiosInstance";
+
 export default {
-  name: "Printreceipt",
-  components: {},
+  name: "PrintInvoice",
+
   data() {
     return {
-      printData: null,
-      receiptItems: null,
-      total: null,
+      invoice: null
     };
   },
-  created() {
-    this.getReceipt();
-  },
-  methods: {
-    getReceipt() {
-      db.collection('invoicesTable').get().then(invoicesTable => {
-        this.printData = invoicesTable.filter((printt) => printt.id === parseInt(this.$route.params.id));
-        this.printData.forEach((item) => {
-          let items = item.itemsTbl;
-          this.receiptItems = JSON.parse(items);
-          this.total = this.receiptItems.reduce((acc, item) => acc + (item.qty * item.unitCost), 0);
-         
-        });
-        console.log(this.receiptItems)
-      //  this.receiptItems = JSON.parse(items);
 
-      });
-      
-    },
+  computed: {
+    grandTotal() {
+      if (!this.invoice) return 0;
+      return this.invoice.items.reduce(
+        (sum, item) => sum + Number(item.total),
+        0
+      );
+    }
   },
+
+  methods: {
+    async fetchInvoice() {
+      const id = this.$route.params.id;
+      const res = await AxiosInstance.get(`/invoices/${id}`);
+      this.invoice = res.data;
+    },
+
+    formatMoney(value) {
+      return Number(value).toLocaleString();
+    },
+
+    formatDate(date) {
+      return new Date(date).toLocaleDateString();
+    }
+  },
+
+  mounted() {
+    this.fetchInvoice();
+  }
 };
 </script>
-<style scoped></style>

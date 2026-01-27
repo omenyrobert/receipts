@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import Receipts from "../views/Receipts.vue"
-import Printreceipt from "../views/Printreceipt.vue"
 import printInvoice from "../views/printInvoice.vue"
+import PrintReceipt from "../views/printReceipt.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/printreceipt/:id',
       name: "Printreceipt",
-      component: Printreceipt,
+      component: PrintReceipt,
     },
     {
       path: '/printInvoice/:id',

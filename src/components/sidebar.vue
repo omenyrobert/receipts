@@ -91,8 +91,6 @@
 <script>
 import { FolderIcon, ChevronDownIcon } from "@heroicons/vue/24/solid";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import db from "../firebase/init"
-import { collection, addDoc, getDocs, query } from "firebase/firestore"
 export default {
   name: "sidebar",
   components: {
@@ -121,52 +119,12 @@ export default {
       this.invoiceItems.splice(index, 1);
     },
 
-    async getReceipts() {
-      const receipts = await getDocs(query(collection(db, 'receipts')));
-      receipts.forEach((doc) => {
-        this.receiptData.push(doc.data)
-        console.log('dee', doc.data)
-      })
-      // console.log('ress', this.receiptData);
-
-    },
-    async postreceipt() {
-      let formdata = {
-        id: this.receiptData?.length + 1,
-        product: this.product,
-        company: this.company,
-        address: this.address,
-        contacts: this.contacts,
-        paid: 0,
-        balance: 0,
-        items: JSON.stringify(this.invoiceItems),
-        date: new Date().toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }),
-      };
-      console.log("form data", formdata);
-      const colRef = collection(db, "receipts");
-      const docRef = await addDoc(colRef, formdata)
-      // db.collection("receiptsTable").add(formdata);
-      this.$router.push('/receipts');
-
-      this.getReceipts();
-      this.product = "";
-      this.company = "";
-      this.address = "";
-      this.contacts = "";
-      this.amount = "";
-      this.amount = "";
-      this.closeIsOpen();
-
-
-    },
+   
+    
   },
 
   created() {
-    this.getReceipts();
+    
   },
 
   data() {
