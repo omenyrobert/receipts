@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Define the base URL
-const API_BASE_URL = "https://api.jktutors.com/api"; // Change this to your API endpoint
+const API_BASE_URL = "http://127.0.0.1:8000/api"; // Change this to your API endpoint
 
 // Create an Axios instance
 const axiosInstance = axios.create({

@@ -11,7 +11,7 @@
     </div>
 
     <div class="mt-2">
-      <p>Ntinda Stage TechBuzz Hub Building</p>
+      <p>Media Plaza Kamwokya Level 3</p>
       <p>
         +256 757227257, +256 771038366 <br />
         jirehdevsoftware.com

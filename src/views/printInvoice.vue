@@ -11,7 +11,7 @@
     </div>
 
     <div class="mt-2">
-      <p>Ntinda Stage TechBuzz Hub Building</p>
+      <p>Media Plaza Kamwokya Level 3</p>
       <p>+256 757227257, WhatsApp +256 757227257</p>
     </div>
 
@@ -68,7 +68,7 @@
     <div class="flex gap-2 mt-6">
       <div class="p-3 border border-gray-300">
         <p>Bank Name</p>
-        <p class="text-xl">Equity Bank</p>
+        <p class="text-xl">DFCU Bank</p>
       </div>
       <div class="p-3 border border-gray-300">
         <p>Account Name</p>
@@ -76,7 +76,7 @@
       </div>
       <div class="p-3 border border-gray-300">
         <p>Account Number</p>
-        <p class="text-xl">1037101292691</p>
+        <p class="text-xl">01490017935449</p>
       </div>
     </div>
   </div>
