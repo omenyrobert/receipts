@@ -1,7 +1,9 @@
 import axios from "axios";
 
-// Define the base URL
-const API_BASE_URL = "http://127.0.0.1:8000/api"; // Change this to your API endpoint
+// Backed by kingdom-heirs-backend's receipts module (see
+// ../kingdom-heirs-backend/receipts/). Defaults to the local dev server;
+// set VITE_API_BASE_URL to point at the deployed backend instead.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 // Create an Axios instance
 const axiosInstance = axios.create({
@@ -12,10 +14,13 @@ const axiosInstance = axios.create({
   },
 });
 
-// Add a request interceptor (Optional: Add auth tokens, logging, etc.)
+// The backend has no login flow for this tool — every request must carry
+// this shared key (checked against RECEIPTS_API_KEY server-side) or it's
+// rejected with 401. Set VITE_RECEIPTS_API_KEY to match the server's value.
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Get the token from local storage or Vuex
+    const apiKey = import.meta.env.VITE_RECEIPTS_API_KEY;
+    if (apiKey) config.headers["x-api-key"] = apiKey;
     const token = localStorage.getItem("auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
