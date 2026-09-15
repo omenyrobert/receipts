@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Vue Router uses history mode (createWebHistory), so a deep link like
+# /receipts or /printreceipt/1 must fall back to index.html — otherwise
+# Netlify 404s on anything but the exact root path.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
