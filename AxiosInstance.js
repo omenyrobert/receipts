@@ -3,7 +3,7 @@ import axios from "axios";
 // Backed by kingdom-heirs-backend's receipts module (see
 // ../kingdom-heirs-backend/receipts/). Defaults to the local dev server;
 // set VITE_API_BASE_URL to point at the deployed backend instead.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://api.mysys.site/api";
 
 // Create an Axios instance
 const axiosInstance = axios.create({
