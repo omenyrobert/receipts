@@ -65,7 +65,7 @@
 
     <p class="font-bold text-lg p-2 bg-gray-100 m-2">{{invoice.comment}}</p>
     <!-- BANK DETAILS -->
-    <div class="flex gap-2 mt-6">
+    <!-- <div class="flex gap-2 mt-6">
       <div class="p-3 border border-gray-300">
         <p>Bank Name</p>
         <p class="text-xl">DFCU Bank</p>
@@ -78,7 +78,7 @@
         <p>Account Number</p>
         <p class="text-xl">01490017935449</p>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
