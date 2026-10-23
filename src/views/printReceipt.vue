@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import AxiosInstance from "../../AxiosInstance";
+import { get } from "../storage";
 
 export default {
   name: "printReceipt",
@@ -86,8 +86,7 @@ export default {
   methods: {
     async fetchReceipt() {
       const id = this.$route.params.id;
-      const res = await AxiosInstance.get(`/receipts/${id}`);
-      this.receipt = res.data;
+      this.receipt = get("receipts", id);
     },
 
     formatMoney(value) {

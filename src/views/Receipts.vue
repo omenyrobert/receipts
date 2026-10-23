@@ -152,7 +152,7 @@
 <script>
 import sidebar from "../components/sidebar.vue";
 import navbar from "../components/navbar.vue";
-import AxiosInstance from "../../AxiosInstance";
+import { list, create } from "../storage";
 
 export default {
   components: { sidebar, navbar },
@@ -203,7 +203,7 @@ export default {
         items: this.receiptItems,
       };
 
-      await AxiosInstance.post("/receipts", payload);
+      create("receipts", payload, { start: 231, pad: 4 });
 
       this.fetchReceipts();
       this.resetForm();
@@ -211,8 +211,7 @@ export default {
     },
 
     async fetchReceipts() {
-      const res = await AxiosInstance.get("/receipts");
-      this.receipts = res.data;
+      this.receipts = list("receipts");
     },
 
     resetForm() {
