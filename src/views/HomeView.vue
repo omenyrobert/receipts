@@ -53,6 +53,9 @@
                 class="input"
                 required
               />
+
+              <label class="mt-4 block">Date</label>
+              <input v-model="date" type="date" class="input" required />
             </div>
 
             <div class="w-1/2 h-[calc(100vh-200px)] overflow-y-auto">
@@ -169,7 +172,7 @@
 <script>
 import sidebar from "../components/sidebar.vue";
 import navbar from "../components/navbar.vue";
-import { list, create } from "../storage";
+import { list, create, today } from "../storage";
 
 export default {
   components: { sidebar, navbar },
@@ -183,6 +186,7 @@ export default {
       address: "",
       contacts: "",
       comment: "",
+      date: today(),
       invoiceItems: [{ item: "", qty: 1, unit_cost: 0 }],
     };
   },
@@ -214,6 +218,7 @@ export default {
         contacts: this.contacts,
         address: this.address,
         comment: this.comment,
+        created_at: `${this.date}T00:00:00`,
         items: this.invoiceItems,
       };
 
@@ -234,6 +239,7 @@ export default {
       this.contacts = "";
       this.address = "";
       this.comment = "";
+      this.date = today();
       this.invoiceItems = [{ item: "", qty: 1, unit_cost: 0 }];
     },
 

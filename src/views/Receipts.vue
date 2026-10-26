@@ -31,6 +31,9 @@
 
               <label class="mt-4 block">Payment Method</label>
               <input v-model="payment_method" placeholder="Enter Method" class="input" />
+
+              <label class="mt-4 block">Date</label>
+              <input v-model="date" type="date" class="input" required />
             </div>
 
             <div class="w-1/2">
@@ -144,6 +147,15 @@
             </span>
           </div>
         </div>
+
+        <div class="flex p-2 bg-gray-100 text-sm font-bold">
+          <div class="w-1/6">Total</div>
+          <div class="w-1/6">{{ formatDate(new Date()) }}</div>
+          <div class="w-1/6"></div>
+          <div class="w-1/6"></div>
+          <div class="w-1/6">{{ formatMoney(totalAmount) }}</div>
+          <div class="w-1/6"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -152,7 +164,7 @@
 <script>
 import sidebar from "../components/sidebar.vue";
 import navbar from "../components/navbar.vue";
-import { list, create } from "../storage";
+import { list, create, today } from "../storage";
 
 export default {
   components: { sidebar, navbar },
@@ -166,8 +178,15 @@ export default {
       address: "",
       payment_method: "",
       comment: "",
+      date: today(),
       receiptItems: [{ item: "", qty: 1, unit_cost: 0 }],
     };
+  },
+
+  computed: {
+    totalAmount() {
+      return this.receipts.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+    },
   },
 
   methods: {
@@ -200,6 +219,7 @@ export default {
         payment_method: this.payment_method,
         comment: this.comment,
         amount,
+        created_at: `${this.date}T00:00:00`,
         items: this.receiptItems,
       };
 
@@ -220,6 +240,7 @@ export default {
       this.address = "";
       this.payment_method = "";
       this.comment = "";
+      this.date = today();
       this.receiptItems = [{ item: "", qty: 1, unit_cost: 0 }];
     },
 

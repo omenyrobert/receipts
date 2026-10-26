@@ -14,6 +14,11 @@ function write(collection, records) {
   localStorage.setItem(collection, JSON.stringify(records));
 }
 
+// Today as YYYY-MM-DD in local time, the format <input type="date"> uses.
+export function today() {
+  return new Date().toLocaleDateString("en-CA");
+}
+
 // Newest first.
 export function list(collection) {
   return read(collection).slice().reverse();
@@ -33,7 +38,7 @@ export function create(collection, payload, { start = 1, pad = 0 } = {}) {
   const record = {
     ...payload,
     id,
-    created_at: new Date().toISOString(),
+    created_at: payload.created_at || new Date().toISOString(),
     items: (payload.items || []).map((i) => ({
       ...i,
       qty: Number(i.qty),
